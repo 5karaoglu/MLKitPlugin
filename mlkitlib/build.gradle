@@ -41,9 +41,15 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    implementation 'com.huawei.agconnect:agconnect-core:1.7.2:300'
+    implementation 'com.huawei.agconnect:agconnect-core:1.8.0:300'
 
     implementation 'com.huawei.hms:ml-computer-vision-face:3.11.0.301'
     implementation 'com.huawei.hms:ml-computer-vision-face-3d-model:3.7.0.301'
+// Import the contour and key point detection model package.
+    implementation 'com.huawei.hms:ml-computer-vision-face-shape-point-model:3.7.0.301'
+// Import the facial expression detection model package.
+    implementation 'com.huawei.hms:ml-computer-vision-face-emotion-model:3.7.0.301'
+// Import the facial feature detection model package.
+    implementation 'com.huawei.hms:ml-computer-vision-face-feature-model:3.7.0.301'
 
 }
