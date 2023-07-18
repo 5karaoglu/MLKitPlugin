@@ -2,6 +2,8 @@ package com.example.mlkitplugin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.SurfaceView
+import com.example.mlcardrecognitionsample.LensEnginePreview
 import com.example.mlkitlib.ThreeDFaceDetectionHelper
 
 class MainActivity : AppCompatActivity() {
@@ -13,9 +15,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val lensEnginePreview = findViewById<LensEnginePreview>(R.id.surface_view)
         helper = ThreeDFaceDetectionHelper()
 
-        helper!!.build(this)
+        helper!!.build(this, lensEnginePreview)
 
     }
 

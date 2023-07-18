@@ -2,6 +2,7 @@ package com.example.mlkitlib
 
 import android.app.Activity
 import android.util.Log
+import android.view.SurfaceView
 import com.example.mlkitlib.lensengine.LensEngine
 import com.example.mlcardrecognitionsample.LensEnginePreview
 import com.example.mlkitlib.lensengine.LocalFace3DTransactor
@@ -12,7 +13,7 @@ import com.huawei.hms.mlsdk.face.face3d.ML3DFaceAnalyzer
 import com.huawei.hms.mlsdk.face.face3d.ML3DFaceAnalyzerSetting
 import java.io.IOException
 
-class ThreeDFaceDetectionHelper {
+class ThreeDFaceDetectionHelper() {
     companion object{
         const val TAG = "ThreeDFaceDetectionHelper"
     }
@@ -30,8 +31,9 @@ class ThreeDFaceDetectionHelper {
     private val facing = CameraConfiguration.CAMERA_FACING_FRONT
 
 
-    fun build(activity: Activity){
+    fun build(activity: Activity, lensEnginePreview: LensEnginePreview){
         mActivity = activity
+        mPreview = lensEnginePreview
         createLensEngine()
 
     }
@@ -110,8 +112,8 @@ class ThreeDFaceDetectionHelper {
             .setTracingAllowed(true)
             .create()
         analyzer = MLAnalyzerFactory.getInstance().get3DFaceAnalyzer(setting)
-        (analyzer as ML3DFaceAnalyzer).setTransactor(ThreeDFaceAnalyzerTransactor())
-        return analyzer as ML3DFaceAnalyzer
+        analyzer.setTransactor(ThreeDFaceAnalyzerTransactor())
+        return analyzer
     }
 
 }

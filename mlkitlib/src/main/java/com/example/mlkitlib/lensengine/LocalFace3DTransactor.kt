@@ -45,6 +45,11 @@ class LocalFace3DTransactor(setting: ML3DFaceAnalyzerSetting?, context: Context)
         frameMetadata: FrameMetadata?
     ) {
         Log.d("toby", "Total HMSFaceProc graphicOverlay start")
+        if (results != null) {
+            if (results.isNotEmpty())
+                Log.d("Thr", "transactResult: ${results?.get(0)?.get3DAllVertexs()?.get(0)?.x},${results?.get(0)?.get3DAllVertexs()?.get(0)?.y}," +
+                        "${results?.get(0)?.get3DAllVertexs()?.get(0)?.z} ")
+        }
       /*  if (originalCameraImage != null) {
             val imageGraphic = CameraImageGraphic(graphicOverlay, originalCameraImage)
             graphicOverlay.addGraphic(imageGraphic)
