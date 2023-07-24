@@ -52,4 +52,13 @@ dependencies {
 // Import the facial feature detection model package.
     implementation 'com.huawei.hms:ml-computer-vision-face-feature-model:3.7.0.301'
 
+
+    implementation 'com.google.mlkit:text-recognition:16.0.0'
+    implementation 'com.google.mlkit:camera:16.0.0-beta3'
+
+    // CameraX
+    implementation "androidx.camera:camera-camera2:1.0.0-SNAPSHOT"
+    implementation "androidx.camera:camera-lifecycle:1.0.0-SNAPSHOT"
+    implementation "androidx.camera:camera-view:1.0.0-SNAPSHOT"
+
 }
