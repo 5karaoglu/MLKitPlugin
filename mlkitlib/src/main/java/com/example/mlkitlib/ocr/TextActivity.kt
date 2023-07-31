@@ -1,8 +1,9 @@
-package com.example.mlkitplugin
+package com.example.mlkitlib.ocr
 
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -10,34 +11,22 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import com.example.mlcardrecognitionsample.LensEnginePreview
-import com.example.mlkitlib.ThreeDFaceDetectionHelper
-import com.example.mlkitlib.ocr.TextRecognitionHelper
-import com.example.mlkitlib.ocr.TextRecognitionProcessor
+import com.example.mlkitlib.R
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
-class MainActivity : AppCompatActivity() {
+class TextActivity : AppCompatActivity() {
 
 
-    private var helper: ThreeDFaceDetectionHelper? = null
     private var textHelper: TextRecognitionHelper? = null
     private var imageUri: Uri? = null
     private var textImagePreview: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_text)
 
-        val lensEnginePreview = findViewById<LensEnginePreview>(R.id.surface_view)
         val buttonCamera = findViewById<Button>(R.id.button_camera)
         textImagePreview = findViewById(R.id.textPreview)
-
-        /**
-         * 3D FaceDetection
-         */
-        helper = ThreeDFaceDetectionHelper()
-        helper!!.build(this, lensEnginePreview)
 
         /**
          * Text Recognition
@@ -69,9 +58,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
     override fun onResume() {
         super.onResume()
-        helper?.resume()
         textHelper?.resume()
     }
 
@@ -82,7 +71,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        helper?.destroy()
         textHelper?.destroy()
     }
 

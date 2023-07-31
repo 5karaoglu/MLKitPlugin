@@ -9,7 +9,8 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 
-class TextRecognitionProcessor(private val context: Context, textRecognizerOptions: TextRecognizerOptionsInterface)
+class TextRecognitionProcessor(private val context: Context, textRecognizerOptions: TextRecognizerOptionsInterface,
+private val callbackListener: (Text) -> Unit)
     : VisionProcessorBase<Text>(context) {
 
     private val textRecognizer: TextRecognizer = TextRecognition.getClient(textRecognizerOptions)
@@ -27,9 +28,10 @@ class TextRecognitionProcessor(private val context: Context, textRecognizerOptio
         return textRecognizer.process(image)
     }
 
-    override fun onSuccess(text: Text) {
+    override fun onSuccess(results: Text) {
         Log.d(TAG, "On-device Text detection successful")
-        logExtrasForTesting(text)
+        logExtrasForTesting(results)
+        callbackListener(results)
     }
 
     override fun onFailure(e: Exception) {

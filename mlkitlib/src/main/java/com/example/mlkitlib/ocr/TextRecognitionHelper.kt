@@ -8,6 +8,7 @@ import android.util.Log
 import android.util.Pair
 import android.widget.ImageView
 import com.example.mlkitlib.lensengine.BitmapUtils
+import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.IOException
 
@@ -28,6 +29,8 @@ class TextRecognitionHelper {
     fun destroy() = imageProcessor?.run { this.stop() }
 
     fun createImageProcessor() {
-        imageProcessor = mContext?.let { TextRecognitionProcessor(it, TextRecognizerOptions.Builder().build()) }
+        imageProcessor = mContext?.let { TextRecognitionProcessor(it, TextRecognizerOptions.Builder().build()) {
+            Log.d("TESTING", "createImageProcessor: value changed2")
+        } }
     }
 }
