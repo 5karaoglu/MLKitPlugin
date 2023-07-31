@@ -3,6 +3,7 @@
 
     <application>
         <activity
+            android:theme="@style/Theme.MLKitPlugin"
             android:name=".ocr.TextActivity"
             android:exported="false" />
     </application>
