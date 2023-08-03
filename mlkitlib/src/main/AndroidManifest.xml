@@ -3,9 +3,12 @@
 
     <application>
         <activity
-            android:theme="@style/Theme.MLKitPlugin"
-            android:name=".ocr.TextActivity"
+            android:name=".face.FaceActivity"
             android:exported="false" />
+        <activity
+            android:name=".ocr.TextActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MLKitPlugin" />
     </application>
 
 </manifest>

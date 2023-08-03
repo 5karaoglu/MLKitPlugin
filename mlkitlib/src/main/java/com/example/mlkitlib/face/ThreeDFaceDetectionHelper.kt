@@ -1,10 +1,10 @@
-package com.example.mlkitlib
+package com.example.mlkitlib.face
 
 import android.app.Activity
 import android.util.Log
-import android.view.SurfaceView
 import com.example.mlkitlib.lensengine.LensEngine
 import com.example.mlcardrecognitionsample.LensEnginePreview
+import com.example.mlkitlib.CameraConfiguration
 import com.example.mlkitlib.lensengine.LocalFace3DTransactor
 import com.huawei.hms.mlsdk.MLAnalyzerFactory
 import com.huawei.hms.mlsdk.common.MLAnalyzer
