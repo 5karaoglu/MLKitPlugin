@@ -23,7 +23,7 @@ class FaceActivity : AppCompatActivity() {
         faceDetector!!.buildAndStartDetection(this,surfaceView!!,transactor)
     }
 
-    private val transactor = object : MLAnalyzer.MLTransactor<ML3DFace?>{
+    private val transactor = object : FaceTransactor{
         override fun destroy() {
             Log.d(TAG, "destroy: Transactor destroyed.")
         }

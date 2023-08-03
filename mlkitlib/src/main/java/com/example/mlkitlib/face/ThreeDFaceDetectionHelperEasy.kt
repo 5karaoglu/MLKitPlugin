@@ -12,8 +12,9 @@ import com.huawei.hms.mlsdk.face.face3d.ML3DFaceAnalyzer
 import com.huawei.hms.mlsdk.face.face3d.ML3DFaceAnalyzerSetting
 import java.io.IOException
 
-
+typealias FaceTransactor = MLAnalyzer.MLTransactor<ML3DFace?>
 class ThreeDFaceDetectionHelperEasy(){
+
     companion object{
         const val TAG = "ThreeDFaceDetectionHelperEasy"
     }
@@ -22,14 +23,29 @@ class ThreeDFaceDetectionHelperEasy(){
     private var analyzer: ML3DFaceAnalyzer? = null
     private var lensEngine: LensEngine? = null
     private var mSurfaceView: SurfaceView? = null
+    private var lensType = LensEngine.FRONT_LENS
 
-    fun buildAndStartDetection(activity: Activity, surfaceView: SurfaceView, transactor: MLAnalyzer.MLTransactor<ML3DFace?>){
+    /***
+     * Sets the Lens type back lens. Default is front
+     */
+    fun setLensTypeBack(){
+        lensType = LensEngine.BACK_LENS
+    }
+
+    /***
+     * Sets the lens type front lens. If not set before, default is front.
+     */
+    fun setLensTypeFront(){
+        lensType = LensEngine.FRONT_LENS
+    }
+
+    fun buildAndStartDetection(activity: Activity, surfaceView: SurfaceView, transactor: FaceTransactor){
         mActivity = activity
         mSurfaceView = surfaceView
         analyzer = threeDFaceDetection(transactor)
 
         lensEngine = LensEngine.Creator(mActivity!!.applicationContext, analyzer)
-            .setLensType(LensEngine.BACK_LENS)
+            .setLensType(lensType)
             .applyDisplayDimension(1440, 1080)
             .applyFps(30.0f)
             .enableAutomaticFocus(true)
@@ -55,7 +71,7 @@ class ThreeDFaceDetectionHelperEasy(){
         })
     }
 
-    private fun threeDFaceDetection(transactor: MLAnalyzer.MLTransactor<ML3DFace?>): ML3DFaceAnalyzer {
+    private fun threeDFaceDetection(transactor: FaceTransactor): ML3DFaceAnalyzer {
         // Use custom parameter settings, and enable the speed preference mode and face tracking function to obtain a faster speed.
         val setting = ML3DFaceAnalyzerSetting.Factory() // Sets the preference mode of an analyzer.
             // ML3DFaceAnalyzerSetting.TYPE_SPEED: speed preference mode.
