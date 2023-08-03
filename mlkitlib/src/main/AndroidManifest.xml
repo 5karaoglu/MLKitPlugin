@@ -4,6 +4,7 @@
     <application>
         <activity
             android:name=".face.FaceActivity"
+            android:theme="@style/Theme.MLKitPlugin"
             android:exported="false" />
         <activity
             android:name=".ocr.TextActivity"
