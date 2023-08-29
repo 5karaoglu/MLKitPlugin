@@ -10,7 +10,7 @@ import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 
 class TextRecognitionProcessor(private val context: Context, textRecognizerOptions: TextRecognizerOptionsInterface,
-private val callbackListener: (Text) -> Unit)
+private val callbackListener: (Text?, Exception?) -> Unit)
     : VisionProcessorBase<Text>(context) {
 
     private val textRecognizer: TextRecognizer = TextRecognition.getClient(textRecognizerOptions)
@@ -31,11 +31,12 @@ private val callbackListener: (Text) -> Unit)
     override fun onSuccess(results: Text) {
         Log.d(TAG, "On-device Text detection successful")
         logExtrasForTesting(results)
-        callbackListener(results)
+        callbackListener(results, null)
     }
 
     override fun onFailure(e: Exception) {
         Log.w(TAG, "Text detection failed.$e")
+        callbackListener(null, e)
     }
 
     companion object {
