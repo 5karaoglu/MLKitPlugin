@@ -12,6 +12,8 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.mlkitlib.R
+import com.example.mlkitlib.ResultListener
+import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
 class TextActivity : AppCompatActivity() {
@@ -21,6 +23,11 @@ class TextActivity : AppCompatActivity() {
     private var imageUri: Uri? = null
     private var textImagePreview: ImageView? = null
 
+    var resultListener: ResultListener<Text>? = null
+
+    fun start(rl: ResultListener<Text>){
+        resultListener = rl
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text)
@@ -43,8 +50,12 @@ class TextActivity : AppCompatActivity() {
     private fun recognizeText(imageBitmap: Bitmap) {
         textImagePreview?.setImageBitmap(imageBitmap)
 
-        val imageProcessor = TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build()) {
+        val imageProcessor = TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build()) { result, exception ->
             Log.d("TESTING", "recognizeText: value changed")
+            if (result != null)
+                resultListener?.onSuccess(result)
+            else
+                resultListener?.onFailure(exception!!)
         }
         imageProcessor.processBitmap(imageBitmap)
     }
@@ -77,4 +88,5 @@ class TextActivity : AppCompatActivity() {
     companion object {
         const val DATA = "data"
     }
+
 }
