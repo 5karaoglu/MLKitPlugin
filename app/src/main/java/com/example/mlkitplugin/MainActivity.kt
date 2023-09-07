@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     private fun recognizeText(imageBitmap: Bitmap) {
         textImagePreview?.setImageBitmap(imageBitmap)
 
-        val imageProcessor = TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build()) {
+        val imageProcessor = TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build()) {text, exception ->
             Log.d("TESTING", "recognizeText: value changed")
         }
         imageProcessor.processBitmap(imageBitmap)

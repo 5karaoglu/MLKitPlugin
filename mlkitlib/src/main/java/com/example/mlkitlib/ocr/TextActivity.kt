@@ -1,9 +1,9 @@
 package com.example.mlkitlib.ocr
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -11,23 +11,35 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.example.mlkitlib.R
 import com.example.mlkitlib.ResultListener
-import com.google.mlkit.vision.text.Text
+import com.example.mlkitlib.UnityBridge
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
+const val TYPE = "TYPE"
 class TextActivity : AppCompatActivity() {
+    companion object {
+        const val DATA = "data"
+        const val TAG = "TESTING"
+        @OptIn(DelicateCoroutinesApi::class)
+        fun start(activity: Activity) {
+            GlobalScope.launch(Dispatchers.Main){
+                val intent: Intent = Intent(activity, TextActivity::class.java)
+                activity.startActivity(intent)
+            }
+        }
+    }
 
 
     private var textHelper: TextRecognitionHelper? = null
     private var imageUri: Uri? = null
     private var textImagePreview: ImageView? = null
 
-    var resultListener: ResultListener<Text>? = null
-
-    fun start(rl: ResultListener<Text>){
-        resultListener = rl
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_text)
@@ -52,10 +64,12 @@ class TextActivity : AppCompatActivity() {
 
         val imageProcessor = TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build()) { result, exception ->
             Log.d("TESTING", "recognizeText: value changed")
-            if (result != null)
-                resultListener?.onSuccess(result)
+            if (result != null){
+                finish()
+                UnityBridge.returnShow(result.text)
+            }
             else
-                resultListener?.onFailure(exception!!)
+                exception!!.localizedMessage?.let { UnityBridge.returnShow(it) }
         }
         imageProcessor.processBitmap(imageBitmap)
     }
@@ -83,10 +97,6 @@ class TextActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         textHelper?.destroy()
-    }
-
-    companion object {
-        const val DATA = "data"
     }
 
 }
