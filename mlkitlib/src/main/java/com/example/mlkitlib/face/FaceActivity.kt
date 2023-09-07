@@ -17,11 +17,11 @@ class FaceActivity : AppCompatActivity() {
     private var faceDetector: ThreeDFaceDetectionHelperEasy? = null
     private var surfaceView: SurfaceView? = null
 
-    var resultListener: ResultListener<MLAnalyzer.Result<ML3DFace?>?>? = null
+   /* var resultListener: ResultListener<MLAnalyzer.Result<ML3DFace?>?>? = null
 
     fun start(rl: ResultListener<MLAnalyzer.Result<ML3DFace?>?>){
         resultListener = rl
-    }
+    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +38,7 @@ class FaceActivity : AppCompatActivity() {
         }
 
         override fun transactResult(p0: MLAnalyzer.Result<ML3DFace?>?) {
-            if (p0 != null) {
+           /* if (p0 != null) {
                 if (p0.analyseList.isNotEmpty()){
                     resultListener?.onSuccess(p0)
                 }else{
@@ -47,7 +47,7 @@ class FaceActivity : AppCompatActivity() {
                     Log.d(TAG, "transactResult: ${p0?.analyseList?.get(0)?.get3DAllVertexs()?.size}")
             }else{
                 resultListener?.onFailure(Exception("Result is null!"))
-            }
+            }*/
         }
 
     }
