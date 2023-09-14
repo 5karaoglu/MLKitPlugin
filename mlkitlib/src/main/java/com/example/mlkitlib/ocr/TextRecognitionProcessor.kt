@@ -1,6 +1,7 @@
 package com.example.mlkitlib.ocr
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
@@ -28,9 +29,18 @@ private val callbackListener: (Text?, Exception?) -> Unit)
         return textRecognizer.process(image)
     }
 
-    override fun onSuccess(results: Text) {
+    override fun onSuccess(results: Text,graphicOverlay: GraphicOverlay) {
         Log.d(TAG, "On-device Text detection successful")
         logExtrasForTesting(results)
+        graphicOverlay.add(
+            TextGraphic(
+                graphicOverlay,
+                results,
+                shouldGroupRecognizedTextInBlocks,
+                showLanguageTag,
+                showConfidence
+            )
+        )
         callbackListener(results, null)
     }
 

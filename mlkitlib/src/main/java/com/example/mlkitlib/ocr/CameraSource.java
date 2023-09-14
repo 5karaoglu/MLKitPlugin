@@ -43,6 +43,7 @@ public class CameraSource {
 
   private static final String TAG = "MIDemoApp:CameraSource";
 
+
   /**
    * The dummy surface texture must be assigned a chosen name. Since we never use an OpenGL context,
    * we can choose any ID we want here. The dummy surface texture is not a crazy hack - it is
@@ -75,6 +76,8 @@ public class CameraSource {
   // to it.
   private SurfaceTexture dummySurfaceTexture;
 
+  private final GraphicOverlay graphicOverlay;
+
   /**
    * Dedicated thread and associated runnable for calling into the detector with frames, as the
    * frames become available from the camera.
@@ -97,8 +100,10 @@ public class CameraSource {
    */
   private final IdentityHashMap<byte[], ByteBuffer> bytesToByteBuffer = new IdentityHashMap<>();
 
-  public CameraSource(Activity activity) {
+  public CameraSource(Activity activity,GraphicOverlay overlay) {
     this.activity = activity;
+    graphicOverlay = overlay;
+    graphicOverlay.clear();
     processingRunnable = new FrameProcessingRunnable();
   }
 
@@ -670,7 +675,8 @@ public class CameraSource {
                     .setWidth(previewSize.getWidth())
                     .setHeight(previewSize.getHeight())
                     .setRotation(rotationDegrees)
-                    .build());
+                    .build(),
+                    graphicOverlay);
           }
         } catch (Exception t) {
           Log.e(TAG, "Exception thrown from receiver.", t);
@@ -682,7 +688,5 @@ public class CameraSource {
   }
 
   /** Cleans up graphicOverlay and child classes can do their cleanups as well . */
-  private void cleanScreen() {
-
-  }
+  private void cleanScreen() { graphicOverlay.clear(); }
 }

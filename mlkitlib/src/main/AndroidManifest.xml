@@ -3,9 +3,13 @@
 
     <application>
         <activity
+            android:name=".ocr.CameraActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MLKitPlugin"/>
+        <activity
             android:name=".face.FaceActivity"
-            android:theme="@style/Theme.MLKitPlugin"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.MLKitPlugin" />
         <activity
             android:name=".ocr.TextActivity"
             android:exported="false"
