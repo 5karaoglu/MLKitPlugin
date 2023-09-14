@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         val imageProcessor = TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build()) {text, exception ->
             Log.d("TESTING", "recognizeText: value changed")
         }
-        imageProcessor.processBitmap(imageBitmap)
+       // imageProcessor.processBitmap(imageBitmap)
     }
 
     private var takePhoto: ActivityResultLauncher<Intent> =

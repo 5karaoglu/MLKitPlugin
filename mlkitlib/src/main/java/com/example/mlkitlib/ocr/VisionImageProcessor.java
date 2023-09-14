@@ -29,15 +29,15 @@ import java.nio.ByteBuffer;
 public interface VisionImageProcessor {
 
   /** Processes a bitmap image. */
-  void processBitmap(Bitmap bitmap);
+  void processBitmap(Bitmap bitmap,GraphicOverlay graphicOverlay);
 
   /** Processes ByteBuffer image data, e.g. used for Camera1 live preview case. */
   void processByteBuffer(
-      ByteBuffer data, FrameMetadata frameMetadata)
+      ByteBuffer data, FrameMetadata frameMetadata,GraphicOverlay graphicOverlay)
       throws MlKitException;
 
   /** Processes ImageProxy image data, e.g. used for CameraX live preview case. */
-  void processImageProxy(ImageProxy image) throws MlKitException;
+  void processImageProxy(ImageProxy image, GraphicOverlay graphicOverlay) throws MlKitException;
 
   /** Stops the underlying machine learning model and release resources. */
   void stop();
