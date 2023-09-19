@@ -1,17 +1,19 @@
 import android.app.Activity
 import android.content.ContentResolver
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import androidx.core.net.toUri
+import android.net.Uri
+import android.widget.Toast
 import java.io.IOException
 import java.io.InputStream
 
-fun uriToBitmap(contentResolver: ContentResolver, uri: String?): Bitmap? {
+fun uriToBitmap(contentResolver: ContentResolver, uri: Uri): Bitmap? {
     var inputStream: InputStream? = null
     try {
-        inputStream = contentResolver.openInputStream(uri!!.toUri())
+        inputStream = contentResolver.openInputStream(uri)
         if (inputStream != null) {
             return BitmapFactory.decodeStream(inputStream)
         }
@@ -41,5 +43,8 @@ fun rotateBitmap(activity: Activity, bitmap: Bitmap): Bitmap {
     matrix.postRotate(rotationDegree.toFloat())
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 }
+
+fun showToastShort(context: Context, message: String) = Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
 
 

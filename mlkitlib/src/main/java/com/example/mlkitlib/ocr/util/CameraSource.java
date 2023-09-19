@@ -1,4 +1,4 @@
-package com.example.mlkitlib.ocr;
+package com.example.mlkitlib.ocr.util;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -17,6 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 
 import com.example.mlkitlib.lensengine.FrameMetadata;
+import com.example.mlkitlib.ocr.VisionImageProcessor;
+import com.example.mlkitlib.ocr.view.GraphicOverlay;
 import com.google.android.gms.common.images.Size;
 
 import java.io.IOException;

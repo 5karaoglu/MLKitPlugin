@@ -2,6 +2,7 @@ package com.example.mlkitlib.ocr
 
 import android.content.Context
 import android.util.Log
+import com.example.mlkitlib.ocr.view.TextRecognitionProcessor
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
 class TextRecognitionHelper {

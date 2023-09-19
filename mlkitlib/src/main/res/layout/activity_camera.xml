@@ -3,25 +3,76 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ocr.CameraActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ocr.ui.CameraActivity">
+
+    <RelativeLayout
+        android:id="@+id/relativeResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/textPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.example.mlkitlib.ocr.view.GraphicOverlay
+            android:id="@+id/graphic_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/layout_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="14dp"
+            android:layout_marginBottom="12dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_line_border"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/edit_text_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:maxHeight="90dp"
+                android:padding="12dp"
+                android:textColor="@android:color/black" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/button_submit"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:background="@drawable/baseline_done_24" />
+
+        </RelativeLayout>
+    </RelativeLayout>
 
     <androidx.camera.view.PreviewView
         android:id="@+id/cameraView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:scaleType="fitCenter"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/button_take_pic"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:translationZ="10dp"
+        android:layout_centerInParent="true"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="40dp"
-        android:background="@color/colorPrimaryDark"
-        android:text="Take Photo"
-        android:textColor="@android:color/white"/>
+        android:foreground="?android:attr/selectableItemBackground"
+        android:background="@drawable/ic_take_photo"
+        android:translationZ="10dp" />
 
 
 </RelativeLayout>
