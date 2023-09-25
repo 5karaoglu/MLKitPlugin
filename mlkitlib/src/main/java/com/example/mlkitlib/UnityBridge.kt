@@ -2,9 +2,8 @@ package com.example.mlkitlib
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Intent
 import android.util.Log
-import com.example.mlkitlib.ocr.TextActivity
+import com.example.mlkitlib.ocr.ui.TextActivity
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

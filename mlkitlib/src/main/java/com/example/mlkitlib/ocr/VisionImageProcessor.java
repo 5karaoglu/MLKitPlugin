@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import androidx.camera.core.ImageProxy;
 
 import com.example.mlkitlib.lensengine.FrameMetadata;
+import com.example.mlkitlib.ocr.view.GraphicOverlay;
 import com.google.mlkit.common.MlKitException;
 
 import java.nio.ByteBuffer;
@@ -29,7 +30,7 @@ import java.nio.ByteBuffer;
 public interface VisionImageProcessor {
 
   /** Processes a bitmap image. */
-  void processBitmap(Bitmap bitmap,GraphicOverlay graphicOverlay);
+  void processBitmap(Bitmap bitmap, GraphicOverlay graphicOverlay);
 
   /** Processes ByteBuffer image data, e.g. used for Camera1 live preview case. */
   void processByteBuffer(

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.mlkitlib.ocr;
+package com.example.mlkitlib.ocr.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

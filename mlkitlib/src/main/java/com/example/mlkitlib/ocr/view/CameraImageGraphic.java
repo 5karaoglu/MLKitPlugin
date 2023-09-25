@@ -1,4 +1,4 @@
-package com.example.mlkitlib.ocr;
+package com.example.mlkitlib.ocr.view;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

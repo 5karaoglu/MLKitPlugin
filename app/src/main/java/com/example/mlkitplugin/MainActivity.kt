@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.mlcardrecognitionsample.LensEnginePreview
 import com.example.mlkitlib.face.ThreeDFaceDetectionHelper
 import com.example.mlkitlib.ocr.TextRecognitionHelper
-import com.example.mlkitlib.ocr.TextRecognitionProcessor
+import com.example.mlkitlib.ocr.view.TextRecognitionProcessor
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
 class MainActivity : AppCompatActivity() {

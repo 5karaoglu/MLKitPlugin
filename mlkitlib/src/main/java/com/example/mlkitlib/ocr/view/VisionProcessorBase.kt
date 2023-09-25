@@ -1,4 +1,4 @@
-package com.example.mlkitlib.ocr
+package com.example.mlkitlib.ocr.view
 
 import android.app.ActivityManager
 import android.content.Context
@@ -6,13 +6,15 @@ import android.graphics.Bitmap
 import android.os.Build.VERSION_CODES
 import android.os.SystemClock
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.GuardedBy
 import androidx.annotation.RequiresApi
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
 import com.example.mlkitlib.lensengine.BitmapUtils
 import com.example.mlkitlib.lensengine.FrameMetadata
+import com.example.mlkitlib.ocr.util.PreferenceUtils
+import com.example.mlkitlib.ocr.ScopedExecutor
+import com.example.mlkitlib.ocr.VisionImageProcessor
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
@@ -114,7 +116,8 @@ abstract class VisionProcessorBase<T>(private val context: Context) : VisionImag
   // -----------------Code for processing live preview frame from Camera1 API-----------------------
   @Synchronized
   override fun processByteBuffer(data: ByteBuffer?, frameMetadata: FrameMetadata?,
-                                 graphicOverlay: GraphicOverlay) {
+                                 graphicOverlay: GraphicOverlay
+  ) {
     latestImage = data
     latestImageMetaData = frameMetadata
     if (processingImage == null && processingMetaData == null) {

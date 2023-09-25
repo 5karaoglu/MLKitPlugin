@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.mlkitlib.ocr;
+package com.example.mlkitlib.ocr.view;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;

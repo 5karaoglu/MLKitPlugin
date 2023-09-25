@@ -4,65 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ocr.TextActivity">
-
-    <ImageView
-        android:id="@+id/textPreview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_edit" />
-
-    <com.example.mlkitlib.ocr.GraphicOverlay
-        android:id="@+id/graphic_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintLeft_toLeftOf="@id/textPreview"
-        app:layout_constraintRight_toRightOf="@id/textPreview"
-        app:layout_constraintTop_toTopOf="@id/textPreview"
-        app:layout_constraintBottom_toBottomOf="@id/textPreview"/>
-
-    <RelativeLayout
-        android:id="@+id/layout_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="14dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@drawable/bg_line_border"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="12dp"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/edit_text_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxHeight="90dp"
-            android:background="@android:color/transparent"
-            android:layout_centerVertical="true"
-            android:textColor="@android:color/black"
-            android:padding="12dp" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/button_submit"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="10dp"
-            android:background="@drawable/baseline_done_24" />
-
-    </RelativeLayout>
+    tools:context=".ocr.ui.TextActivity">
 
     <Button
         android:id="@+id/button_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Open Camera"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
