@@ -6,6 +6,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.widget.Toast
 import java.io.IOException
 import java.io.InputStream
@@ -46,5 +50,15 @@ fun rotateBitmap(activity: Activity, bitmap: Bitmap): Bitmap {
 
 fun showToastShort(context: Context, message: String) = Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
+fun vibrate(context: Context){
+    val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+        vibratorManager.defaultVibrator
+    }
+    else context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
+    else vibrator.vibrate(100)
+}
 

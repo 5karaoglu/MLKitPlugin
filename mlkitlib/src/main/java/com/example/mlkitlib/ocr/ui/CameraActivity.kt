@@ -31,6 +31,7 @@ import resizeBitmap
 import rotateBitmap
 import showToastShort
 import uriToBitmap
+import vibrate
 import java.io.File
 
 
@@ -97,7 +98,7 @@ class CameraActivity : AppCompatActivity() {
                     override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                         val savedUri = Uri.fromFile(photoFile)
                         configBitmap(savedUri)
-                        vibrate()
+                        vibrate(this@CameraActivity)
                     }
 
                     override fun onError(exc: ImageCaptureException) {
@@ -126,9 +127,11 @@ class CameraActivity : AppCompatActivity() {
 
     // Update UI after captured photo
     private fun updateUI(result: Text) {
-        binding.layoutEdit.visibility = View.VISIBLE
-        binding.editTextResult.setText(result.text)
-        binding.editTextResult.requestFocus()
+        binding.apply {
+            layoutEdit.visibility = View.VISIBLE
+            editTextResult.setText(result.text)
+            editTextResult.requestFocus()
+        }
     }
 
     private fun configBitmap(uri: Uri) {
@@ -143,16 +146,6 @@ class CameraActivity : AppCompatActivity() {
             val rotatedBitmap = rotateBitmap(this, resizeBitmap)
 
             recognizeText(rotatedBitmap)
-        }
-    }
-
-    //Vibrate device after captured photo
-    private fun vibrate(){
-        val vibrator = this.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrator.vibrate(100)
         }
     }
 
