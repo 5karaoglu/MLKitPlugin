@@ -48,6 +48,7 @@ class CameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
         initCameraX()
         setup()
@@ -143,9 +144,9 @@ class CameraActivity : AppCompatActivity() {
             binding.cameraView.visibility = View.GONE
 
             val resizeBitmap = resizeBitmap(bitmap)
-            val rotatedBitmap = rotateBitmap(this, resizeBitmap)
+        //    val rotatedBitmap = rotateBitmap(this, resizeBitmap)
 
-            recognizeText(rotatedBitmap)
+            recognizeText(resizeBitmap)
         }
     }
 
