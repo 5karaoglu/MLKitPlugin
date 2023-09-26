@@ -42,11 +42,11 @@
                 android:layout_centerVertical="true"
                 android:background="@android:color/transparent"
                 android:maxHeight="50dp"
-                android:padding="12dp"
+                android:padding="6dp"
                 android:textColor="@android:color/black" />
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/button_submit"
+                android:id="@+id/button_cancel"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignParentEnd="true"

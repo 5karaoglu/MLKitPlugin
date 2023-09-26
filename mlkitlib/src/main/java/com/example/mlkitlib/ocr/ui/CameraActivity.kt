@@ -58,7 +58,7 @@ class CameraActivity : AppCompatActivity() {
         textHelper = TextRecognitionHelper()
         imageUri?.let { textHelper?.build(this) }
 
-        binding.buttonSubmit.setOnClickListener {
+        binding.buttonCancel.setOnClickListener {
             finish()
             UnityBridge.returnShow(binding.editTextResult.text.toString())
         }
