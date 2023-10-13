@@ -79,8 +79,14 @@ class CameraActivity : AppCompatActivity() {
             binding.infoView.visibility = View.GONE
         }
 
-        viewModel.selectedTextList.observe(this){
+        viewModel.selectedTextList.observe(this){ list ->
             binding.graphicOverlay.clear()
+            var string = ""
+            list.map {
+                if(it.isSelected)
+                    string += it.text
+            }
+            binding.editTextResult.setText(string)
 
             binding.graphicOverlay.add(
                 viewModel.selectedTextList.value?.let { it1 ->
@@ -155,10 +161,12 @@ class CameraActivity : AppCompatActivity() {
             result?.let { text ->
                 viewModel.clearList()
                 rectList.clear()
+                val list = mutableListOf<TextItem>()
                 text.textBlocks.map {
                     rectList.add(TextItem(it.text,it.lines.size, RectF(it.boundingBox),false))
-                    viewModel.addToSelectedTextList(TextItem(it.text,it.lines.size, RectF(it.boundingBox),false))
+                    list.add(TextItem(it.text,it.lines.size, RectF(it.boundingBox),false))
                 }
+                viewModel.setList(list)
                 binding.graphicOverlay.setImageSourceInfo(imageBitmap.width, imageBitmap.height, false)
                 updateUI(text)
 
@@ -171,7 +179,6 @@ class CameraActivity : AppCompatActivity() {
     private fun updateUI(result: Text) {
         binding.apply {
             layoutEdit.visibility = View.VISIBLE
-            editTextResult.setText(result.text)
             editTextResult.requestFocus()
         }
     }

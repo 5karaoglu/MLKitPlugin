@@ -46,7 +46,7 @@ private val callbackListener: (Text?, Exception?) -> Unit
             selectedList.forEach {
                 list.add(it)
             }
-        graphicOverlay.clear()
+        /*graphicOverlay.clear()
         graphicOverlay.add(
             TextGraphic(
                 graphicOverlay,
@@ -55,7 +55,7 @@ private val callbackListener: (Text?, Exception?) -> Unit
                 showLanguageTag,
                 showConfidence
             )
-        )
+        )*/
         callbackListener(results, null)
     }
 

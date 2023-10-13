@@ -36,13 +36,11 @@ import kotlin.math.min
 class TextGraphic
 constructor(
   private val overlay: GraphicOverlay?,
-  private val context: Context,
-  private val eventListener: OnTouchEventListener,
   private val text: List<TextItem>,
   private val shouldGroupTextInBlocks: Boolean,
   private val showLanguageTag: Boolean,
   private val showConfidence: Boolean
-) : GraphicOverlay.Graphic(overlay, eventListener) {
+) : GraphicOverlay.Graphic(overlay) {
 
   private val rectPaint: Paint = Paint()
   private val selectedRectPaint: Paint = Paint()

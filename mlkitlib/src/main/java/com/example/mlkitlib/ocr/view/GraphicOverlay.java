@@ -100,16 +100,9 @@ public class GraphicOverlay extends View {
    */
   public abstract static class Graphic {
     private GraphicOverlay overlay;
-    private OnTouchEventListener onEvent;
 
-    public Graphic(GraphicOverlay overlay, OnTouchEventListener touchEvent) {
+    public Graphic(GraphicOverlay overlay) {
       this.overlay = overlay;
-      this.onEvent = touchEvent;
-    }
-
-    public Boolean OnScreenClick(MotionEvent event){
-      onEvent.OnClick(event);
-      return false;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.example.mlkitlib.ocr.ui
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.mlkitlib.ocr.TextItem
@@ -11,7 +12,13 @@ class CameraViewModel: ViewModel() {
     val selectedTextList get() = _selectedTextList
 
     fun addToSelectedTextList(textItem: TextItem){
-        _selectedTextList.value?.add(textItem)
+        val list = selectedTextList.value ?: mutableListOf<TextItem>()
+        list.add(textItem)
+        _selectedTextList.value = list
+    }
+
+    fun setList(list: MutableList<TextItem>){
+        _selectedTextList.value = list
     }
 
     fun removeFromSelectedTextList(textItem: TextItem){
@@ -19,11 +26,25 @@ class CameraViewModel: ViewModel() {
     }
 
     fun clearList(){
-        _selectedTextList.value?.clear()
+        _selectedTextList.value = mutableListOf<TextItem>()
     }
 
     fun handleClickedText(item: TextItem) {
-        selectedTextList.value?.forEachIndexed { index, textItem ->
+        val list = selectedTextList.value
+        if (!list.isNullOrEmpty()){
+            val text = list.find {
+                Log.d("TESTING", "handleClickedText: ${it.text} while ${item.text}")
+                it.text== item.text
+            }
+            val index = list.indexOf(text)
+            text!!.isSelected = !text.isSelected
+            list[index] = text
+            _selectedTextList.value = list
+        }
+
+
+        /*selectedTextList.value?.forEachIndexed { index, textItem ->
+
             textItem.takeIf {
                 it.rect == item.rect
             }?.let {
@@ -34,6 +55,6 @@ class CameraViewModel: ViewModel() {
                 }
                 _selectedTextList.value = list
             }
-        }
+        }*/
     }
 }
