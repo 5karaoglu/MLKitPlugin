@@ -1,7 +1,9 @@
 package com.example.mlkitlib.ocr.view
 
 import android.content.Context
+import android.graphics.RectF
 import android.util.Log
+import com.example.mlkitlib.ocr.TextItem
 import com.example.mlkitlib.ocr.util.PreferenceUtils
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
@@ -11,12 +13,14 @@ import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 
 class TextRecognitionProcessor(private val context: Context, textRecognizerOptions: TextRecognizerOptionsInterface,
-private val callbackListener: (Text?, Exception?) -> Unit)
+                               private val selectedList: List<TextItem> = listOf(),
+private val callbackListener: (Text?, Exception?) -> Unit
+)
     : VisionProcessorBase<Text>(context) {
 
     private val textRecognizer: TextRecognizer = TextRecognition.getClient(textRecognizerOptions)
     private val shouldGroupRecognizedTextInBlocks: Boolean =
-        PreferenceUtils.shouldGroupRecognizedTextInBlocks(context)
+        true
     private val showLanguageTag: Boolean = PreferenceUtils.showLanguageTag(context)
     private val showConfidence: Boolean = PreferenceUtils.shouldShowTextConfidence(context)
 
@@ -32,10 +36,21 @@ private val callbackListener: (Text?, Exception?) -> Unit)
     override fun onSuccess(results: Text,graphicOverlay: GraphicOverlay) {
         Log.d(TAG, "On-device Text detection successful")
         logExtrasForTesting(results)
+        val list = mutableListOf<TextItem>()
+        if (selectedList.isEmpty())
+            results.textBlocks.forEach {
+                val rectF = RectF(it.boundingBox)
+                list.add(TextItem(it.text,it.lines.size,rectF,false))
+            }
+        else
+            selectedList.forEach {
+                list.add(it)
+            }
+        graphicOverlay.clear()
         graphicOverlay.add(
             TextGraphic(
                 graphicOverlay,
-                results,
+                list,
                 shouldGroupRecognizedTextInBlocks,
                 showLanguageTag,
                 showConfidence

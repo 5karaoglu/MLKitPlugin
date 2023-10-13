@@ -24,6 +24,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.google.common.base.Preconditions;
@@ -71,6 +72,27 @@ public class GraphicOverlay extends View {
   private boolean isImageFlipped;
   private boolean needUpdateTransformation = true;
 
+  private OnTouchEventListener clickListener = new OnTouchEventListener() {
+    @Override
+    public boolean OnClick(MotionEvent event) {
+
+      return false;
+    }
+  };
+
+
+  public interface OnTouchEventListener{
+    boolean OnClick(MotionEvent event);
+  }
+
+  @Override
+  public boolean onTouchEvent(MotionEvent event) {
+    clickListener.OnClick(event);
+    return false;
+  }
+
+
+
   /**
    * Base class for a custom graphics object to be rendered within the graphic overlay. Subclass
    * this and implement the {@link Graphic#draw(Canvas)} method to define the graphics element. Add
@@ -78,9 +100,16 @@ public class GraphicOverlay extends View {
    */
   public abstract static class Graphic {
     private GraphicOverlay overlay;
+    private OnTouchEventListener onEvent;
 
-    public Graphic(GraphicOverlay overlay) {
+    public Graphic(GraphicOverlay overlay, OnTouchEventListener touchEvent) {
       this.overlay = overlay;
+      this.onEvent = touchEvent;
+    }
+
+    public Boolean OnScreenClick(MotionEvent event){
+      onEvent.OnClick(event);
+      return false;
     }
 
     /**
@@ -216,6 +245,13 @@ public class GraphicOverlay extends View {
     addOnLayoutChangeListener(
         (view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) ->
             needUpdateTransformation = true);
+  }
+
+  public GraphicOverlay(Context context) {
+    super(context);
+    addOnLayoutChangeListener(
+            (view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) ->
+                    needUpdateTransformation = true);
   }
 
   /** Removes all graphics from the overlay. */

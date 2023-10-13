@@ -16,11 +16,14 @@
 
 package com.example.mlkitlib.ocr.view
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.Log
+import com.example.mlkitlib.ocr.TextItem
+import com.example.mlkitlib.ocr.view.GraphicOverlay.OnTouchEventListener
 import com.google.mlkit.vision.text.Text
 import java.util.*
 import kotlin.math.max
@@ -32,14 +35,17 @@ import kotlin.math.min
  */
 class TextGraphic
 constructor(
-  overlay: GraphicOverlay?,
-  private val text: Text,
+  private val overlay: GraphicOverlay?,
+  private val context: Context,
+  private val eventListener: OnTouchEventListener,
+  private val text: List<TextItem>,
   private val shouldGroupTextInBlocks: Boolean,
   private val showLanguageTag: Boolean,
   private val showConfidence: Boolean
-) : GraphicOverlay.Graphic(overlay) {
+) : GraphicOverlay.Graphic(overlay, eventListener) {
 
   private val rectPaint: Paint = Paint()
+  private val selectedRectPaint: Paint = Paint()
   private val textPaint: Paint
   private val labelPaint: Paint
 
@@ -47,6 +53,9 @@ constructor(
     rectPaint.color = MARKER_COLOR
     rectPaint.style = Paint.Style.STROKE
     rectPaint.strokeWidth = STROKE_WIDTH
+    selectedRectPaint.color = SELECTED_MARKER_COLOR
+    selectedRectPaint.style = Paint.Style.STROKE
+    selectedRectPaint.strokeWidth = STROKE_WIDTH
     textPaint = Paint()
     textPaint.color = TEXT_COLOR
     textPaint.textSize = TEXT_SIZE
@@ -55,24 +64,26 @@ constructor(
     labelPaint.style = Paint.Style.FILL
     // Redraw the overlay, as this graphic has been added.
     postInvalidate()
+
   }
+
 
   /** Draws the text block annotations for position, size, and raw value on the supplied canvas. */
   override fun draw(canvas: Canvas) {
-    Log.d(TAG, "Text is: " + text.text)
-    for (textBlock in text.textBlocks) { // Renders the text at the bottom of the box.
-      Log.d(TAG, "TextBlock text is: " + textBlock.text)
+    for (textBlock in text) { // Renders the text at the bottom of the box.
+      /*Log.d(TAG, "TextBlock text is: " + textBlock.text)
       Log.d(TAG, "TextBlock boundingbox is: " + textBlock.boundingBox)
-      Log.d(TAG, "TextBlock cornerpoint is: " + Arrays.toString(textBlock.cornerPoints))
+      Log.d(TAG, "TextBlock cornerpoint is: " + Arrays.toString(textBlock.cornerPoints))*/
       if (shouldGroupTextInBlocks) {
         drawText(
-          getFormattedText(textBlock.text, textBlock.recognizedLanguage, confidence = null),
-          RectF(textBlock.boundingBox),
-          TEXT_SIZE * textBlock.lines.size + 2 * STROKE_WIDTH,
+          getFormattedText(textBlock.text, "", confidence = null),
+          textBlock.isSelected,
+          textBlock.rect,
+          TEXT_SIZE * textBlock.lines + 2 * STROKE_WIDTH,
           canvas
         )
       } else {
-        for (line in textBlock.lines) {
+        /*for (line in textBlock.lines) {
           Log.d(TAG, "Line text is: " + line.text)
           Log.d(TAG, "Line boundingbox is: " + line.boundingBox)
           Log.d(TAG, "Line cornerpoint is: " + Arrays.toString(line.cornerPoints))
@@ -101,7 +112,7 @@ constructor(
             Log.d(TAG, "Symbol angle is: " + symbol.angle)
           }
           }
-        }
+        }*/
       }
     }
   }
@@ -113,7 +124,7 @@ constructor(
     else res
   }
 
-  private fun drawText(text: String, rect: RectF, textHeight: Float, canvas: Canvas) {
+  private fun drawText(text: String, isSelected: Boolean, rect: RectF, textHeight: Float, canvas: Canvas) {
 
     // If the image is flipped, the left will be translated to right, and the right to left.
     val x0 = translateX(rect.left)
@@ -122,8 +133,12 @@ constructor(
     rect.right = max(x0, x1)
     rect.top = translateY(rect.top)
     rect.bottom = translateY(rect.bottom)
-    canvas.drawRect(rect, rectPaint)
-    val textWidth = textPaint.measureText(text)
+    if (isSelected){
+      canvas.drawRect(rect, selectedRectPaint)
+    }else{
+      canvas.drawRect(rect, rectPaint)
+    }
+    //val textWidth = textPaint.measureText(text)
     //  canvas.drawRect(rect.left - STROKE_WIDTH, rect.top - textHeight, rect.left + textWidth + 2 * STROKE_WIDTH, rect.top, labelPaint)
     // Renders the text at the bottom of the box.
     //canvas.drawText(text, rect.left, rect.top + 400, textPaint)
@@ -135,7 +150,8 @@ constructor(
     private const val TAG = "TextGraphic"
     private const val TEXT_WITH_LANGUAGE_TAG_FORMAT = "%s:%s"
     private const val TEXT_COLOR = Color.MAGENTA
-    private const val MARKER_COLOR = Color.BLUE
+    private const val MARKER_COLOR = Color.RED
+    private const val SELECTED_MARKER_COLOR = Color.GREEN
     private const val TEXT_SIZE = 46.0f
     private const val STROKE_WIDTH = 4.0f
   }
