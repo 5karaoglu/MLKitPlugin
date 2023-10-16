@@ -1,5 +1,6 @@
 package com.example.mlkitlib.ocr.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.RectF
 import android.util.Log
@@ -13,8 +14,7 @@ import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 
 class TextRecognitionProcessor(private val context: Context, textRecognizerOptions: TextRecognizerOptionsInterface,
-                               private val selectedList: List<TextItem> = listOf(),
-private val callbackListener: (Text?, Exception?) -> Unit
+private val callbackListener: (MutableList<TextItem>?, Exception?) -> Unit
 )
     : VisionProcessorBase<Text>(context) {
 
@@ -33,18 +33,14 @@ private val callbackListener: (Text?, Exception?) -> Unit
         return textRecognizer.process(image)
     }
 
-    override fun onSuccess(results: Text,graphicOverlay: GraphicOverlay) {
+    @SuppressLint("SuspiciousIndentation")
+    override fun onSuccess(results: Text, graphicOverlay: GraphicOverlay) {
         Log.d(TAG, "On-device Text detection successful")
         logExtrasForTesting(results)
         val list = mutableListOf<TextItem>()
-        if (selectedList.isEmpty())
             results.textBlocks.forEach {
                 val rectF = RectF(it.boundingBox)
                 list.add(TextItem(it.text,it.lines.size,rectF,false))
-            }
-        else
-            selectedList.forEach {
-                list.add(it)
             }
         /*graphicOverlay.clear()
         graphicOverlay.add(
@@ -56,7 +52,7 @@ private val callbackListener: (Text?, Exception?) -> Unit
                 showConfidence
             )
         )*/
-        callbackListener(results, null)
+        callbackListener(list, null)
     }
 
     override fun onFailure(e: Exception) {

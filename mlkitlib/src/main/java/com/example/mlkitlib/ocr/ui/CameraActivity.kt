@@ -1,6 +1,9 @@
 package com.example.mlkitlib.ocr.ui
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
@@ -23,6 +26,7 @@ import com.example.mlkitlib.databinding.ActivityCameraBinding
 import com.example.mlkitlib.ocr.TextItem
 import com.example.mlkitlib.ocr.TextRecognitionHelper
 import com.example.mlkitlib.ocr.util.viewBinding
+import com.example.mlkitlib.ocr.view.GraphicOverlay
 import com.example.mlkitlib.ocr.view.TextGraphic
 import com.example.mlkitlib.ocr.view.TextRecognitionProcessor
 import com.google.mlkit.vision.text.Text
@@ -43,11 +47,11 @@ class CameraActivity : AppCompatActivity() {
     private var textHelper: TextRecognitionHelper? = null
     private var imageUri: Uri? = null
 
-    private var rectList: MutableList<TextItem> = mutableListOf()
-
     private var PHOTO_FORMAT: String = ".jpg"
 
-    private var isCameraUsing = false
+    private var imageBitmap: Bitmap? = null
+
+    private var lastGraphic: TextGraphic? = null
 
     lateinit var mDetector: GestureDetectorCompat
 
@@ -80,25 +84,27 @@ class CameraActivity : AppCompatActivity() {
         }
 
         viewModel.selectedTextList.observe(this){ list ->
-            binding.graphicOverlay.clear()
-            var string = ""
-            list.map {
-                if(it.isSelected)
-                    string += it.text
-            }
-            binding.editTextResult.setText(string)
-
-            binding.graphicOverlay.add(
-                viewModel.selectedTextList.value?.let { it1 ->
-                    TextGraphic(binding.graphicOverlay,
-                        it1,true,false,false)
+            if (!list.isNullOrEmpty()){
+                binding.graphicOverlay.remove(lastGraphic)
+                var string = ""
+                list.map {
+                    if(it.isSelected)
+                        string += it.text + "\n"
                 }
-            )
+                binding.editTextResult.setText(string)
+
+                if (imageBitmap != null)
+                    binding.graphicOverlay.setImageSourceInfo(imageBitmap!!.width, imageBitmap!!.height, false)
+                val graphic =  TextGraphic(binding.graphicOverlay,
+                    list,true,false,false)
+                binding.graphicOverlay.add(graphic)
+                lastGraphic = graphic
+            }
         }
     }
 
     private fun setInitialScreen(){
-        rectList.clear()
+        viewModel.clearList()
         binding.relativeResult.visibility = View.INVISIBLE
         binding.buttonTakePic.visibility = View.VISIBLE
         binding.cameraView.visibility = View.VISIBLE
@@ -151,24 +157,19 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun recognizeText(imageBitmap: Bitmap) {
+    private fun recognizeText(mImageBitmap: Bitmap) {
+        imageBitmap = mImageBitmap
         runOnUiThread { binding.textPreview.setImageBitmap(imageBitmap) }
         binding.graphicOverlay.clear()
 
-        val imageProcessor = TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build(), viewModel.selectedTextList.value as List<TextItem>) { result, exception ->
+        val imageProcessor = TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build()) { result, exception ->
             Log.d("TESTING", "recognizeText: value changed")
 
             result?.let { text ->
                 viewModel.clearList()
-                rectList.clear()
-                val list = mutableListOf<TextItem>()
-                text.textBlocks.map {
-                    rectList.add(TextItem(it.text,it.lines.size, RectF(it.boundingBox),false))
-                    list.add(TextItem(it.text,it.lines.size, RectF(it.boundingBox),false))
-                }
-                viewModel.setList(list)
-                binding.graphicOverlay.setImageSourceInfo(imageBitmap.width, imageBitmap.height, false)
-                updateUI(text)
+                viewModel.setList(text)
+                binding.graphicOverlay.setImageSourceInfo(imageBitmap!!.width, imageBitmap!!.height, false)
+                updateUI()
 
             } ?: exception!!.localizedMessage?.let { UnityBridge.returnShow(it) }
         }
@@ -176,7 +177,7 @@ class CameraActivity : AppCompatActivity() {
     }
 
     // Update UI after captured photo
-    private fun updateUI(result: Text) {
+    private fun updateUI() {
         binding.apply {
             layoutEdit.visibility = View.VISIBLE
             editTextResult.requestFocus()
@@ -204,12 +205,13 @@ class CameraActivity : AppCompatActivity() {
     }
 
     fun onTextClick(event: MotionEvent?){
+        val list = viewModel.selectedTextList.value
         val x = event?.x
         val y = event?.y
         if (x != null && y != null)
-            rectList.forEach {
+            list?.forEach {
                 if (it.rect.contains(x,y)){
-                    Log.d("TESTING", "onTouchEvent: you clicked ${(rectList.indexOf(it))+1}")
+                    Log.d("TESTING", "onTouchEvent: you clicked ${(list.indexOf(it))+1}")
                     viewModel.handleClickedText(it)
                 }
             }

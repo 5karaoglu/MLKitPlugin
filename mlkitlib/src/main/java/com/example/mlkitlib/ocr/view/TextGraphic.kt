@@ -23,9 +23,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.util.Log
 import com.example.mlkitlib.ocr.TextItem
-import com.example.mlkitlib.ocr.view.GraphicOverlay.OnTouchEventListener
-import com.google.mlkit.vision.text.Text
-import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
@@ -125,12 +122,13 @@ constructor(
   private fun drawText(text: String, isSelected: Boolean, rect: RectF, textHeight: Float, canvas: Canvas) {
 
     // If the image is flipped, the left will be translated to right, and the right to left.
-    val x0 = translateX(rect.left)
+    /*val x0 = translateX(rect.left)
     val x1 = translateX(rect.right)
     rect.left = min(x0, x1)
-    rect.right = max(x0, x1)
-    rect.top = translateY(rect.top)
-    rect.bottom = translateY(rect.bottom)
+    rect.right = max(x0, x1)*/
+    /*rect.top = translateY(rect.top)
+    rect.bottom = translateY(rect.bottom)*/
+    Log.d(TAG, "drawText: ${rect.left},${rect.right},${rect.top},${rect.bottom}")
     if (isSelected){
       canvas.drawRect(rect, selectedRectPaint)
     }else{

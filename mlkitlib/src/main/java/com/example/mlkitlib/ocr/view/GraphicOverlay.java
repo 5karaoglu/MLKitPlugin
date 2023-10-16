@@ -72,25 +72,6 @@ public class GraphicOverlay extends View {
   private boolean isImageFlipped;
   private boolean needUpdateTransformation = true;
 
-  private OnTouchEventListener clickListener = new OnTouchEventListener() {
-    @Override
-    public boolean OnClick(MotionEvent event) {
-
-      return false;
-    }
-  };
-
-
-  public interface OnTouchEventListener{
-    boolean OnClick(MotionEvent event);
-  }
-
-  @Override
-  public boolean onTouchEvent(MotionEvent event) {
-    clickListener.OnClick(event);
-    return false;
-  }
-
 
 
   /**
@@ -119,6 +100,7 @@ public class GraphicOverlay extends View {
      * @param canvas drawing canvas
      */
     public abstract void draw(Canvas canvas);
+
 
     protected void drawRect(
         Canvas canvas, float left, float top, float right, float bottom, Paint paint) {
