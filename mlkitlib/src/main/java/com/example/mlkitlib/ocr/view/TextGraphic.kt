@@ -43,6 +43,7 @@ constructor(
   private val selectedRectPaint: Paint = Paint()
   private val textPaint: Paint
   private val labelPaint: Paint
+  private val rectCornerRadius = 15F
 
   init {
     rectPaint.color = MARKER_COLOR
@@ -77,67 +78,22 @@ constructor(
           TEXT_SIZE * textBlock.lines + 2 * STROKE_WIDTH,
           canvas
         )
-      } else {
-        /*for (line in textBlock.lines) {
-          Log.d(TAG, "Line text is: " + line.text)
-          Log.d(TAG, "Line boundingbox is: " + line.boundingBox)
-          Log.d(TAG, "Line cornerpoint is: " + Arrays.toString(line.cornerPoints))
-          Log.d(TAG, "Line confidence is: " + line.confidence)
-          Log.d(TAG, "Line angle is: " + line.angle)
-          // Draws the bounding box around the TextBlock.
-          val rect = RectF(line.boundingBox)
-          drawText(
-            getFormattedText(line.text, line.recognizedLanguage, line.confidence),
-            rect,
-            TEXT_SIZE + 2 * STROKE_WIDTH,
-            canvas
-          )
-          for (element in line.elements) {
-            Log.d(TAG, "Element text is: " + element.text)
-            Log.d(TAG, "Element boundingbox is: " + element.boundingBox)
-            Log.d(TAG, "Element cornerpoint is: " + Arrays.toString(element.cornerPoints))
-            Log.d(TAG, "Element language is: " + element.recognizedLanguage)
-            Log.d(TAG, "Element confidence is: " + element.confidence)
-            Log.d(TAG, "Element angle is: " + element.angle)
-            for (symbol in element.symbols) {
-            Log.d(TAG, "Symbol text is: " + symbol.text)
-            Log.d(TAG, "Symbol boundingbox is: " + symbol.boundingBox)
-            Log.d(TAG, "Symbol cornerpoint is: " + Arrays.toString(symbol.cornerPoints))
-            Log.d(TAG, "Symbol confidence is: " + symbol.confidence)
-            Log.d(TAG, "Symbol angle is: " + symbol.angle)
-          }
-          }
-        }*/
       }
     }
   }
 
   private fun getFormattedText(text: String, languageTag: String, confidence: Float?): String {
-    val res =
-      if (showLanguageTag) String.format(TEXT_WITH_LANGUAGE_TAG_FORMAT, languageTag, text) else text
+    val res = if (showLanguageTag) String.format(TEXT_WITH_LANGUAGE_TAG_FORMAT, languageTag, text) else text
     return if (showConfidence && confidence != null) String.format("%s (%.2f)", res, confidence)
     else res
   }
 
   private fun drawText(text: String, isSelected: Boolean, rect: RectF, textHeight: Float, canvas: Canvas) {
-
-    // If the image is flipped, the left will be translated to right, and the right to left.
-    /*val x0 = translateX(rect.left)
-    val x1 = translateX(rect.right)
-    rect.left = min(x0, x1)
-    rect.right = max(x0, x1)*/
-    /*rect.top = translateY(rect.top)
-    rect.bottom = translateY(rect.bottom)*/
     Log.d(TAG, "drawText: ${rect.left},${rect.right},${rect.top},${rect.bottom}")
-    if (isSelected){
-      canvas.drawRect(rect, selectedRectPaint)
-    }else{
-      canvas.drawRect(rect, rectPaint)
-    }
-    //val textWidth = textPaint.measureText(text)
-    //  canvas.drawRect(rect.left - STROKE_WIDTH, rect.top - textHeight, rect.left + textWidth + 2 * STROKE_WIDTH, rect.top, labelPaint)
-    // Renders the text at the bottom of the box.
-    //canvas.drawText(text, rect.left, rect.top + 400, textPaint)
+
+    if (isSelected) canvas.drawRoundRect(rect, rectCornerRadius,rectCornerRadius,selectedRectPaint)
+    else canvas.drawRoundRect(rect, rectCornerRadius,rectCornerRadius,rectPaint)
+
     Log.v("textLogg", text)
   }
 
