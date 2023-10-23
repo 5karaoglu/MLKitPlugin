@@ -1,5 +1,6 @@
 package com.example.mlkitlib.ocr.ui
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -162,6 +163,7 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun recognizeText(mImageBitmap: Bitmap) {
         imageBitmap = mImageBitmap
 
@@ -184,6 +186,10 @@ class CameraActivity : AppCompatActivity() {
         binding.graphicOverlay.updateLayoutParams{
             height = imageBitmap!!.height
             width = imageBitmap!!.width
+        }.also {
+            binding.graphicOverlay.setOnTouchListener { view, motionEvent ->
+                mDetector.onTouchEvent(motionEvent)
+            }
         }
 
     }
@@ -212,9 +218,9 @@ class CameraActivity : AppCompatActivity() {
     }
 
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
+    /*override fun onTouchEvent(event: MotionEvent?): Boolean {
         return mDetector.onTouchEvent(event!!)
-    }
+    }*/
 
     fun onTextClick(event: MotionEvent?){
         val list = viewModel.selectedTextList.value
