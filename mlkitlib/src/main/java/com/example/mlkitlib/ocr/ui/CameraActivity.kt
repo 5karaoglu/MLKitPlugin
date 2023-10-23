@@ -8,9 +8,12 @@ import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.util.Rational
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
+import android.view.Surface
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.AspectRatio
@@ -21,6 +24,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.core.view.GestureDetectorCompat
+import androidx.core.view.updateLayoutParams
 import com.example.mlkitlib.UnityBridge
 import com.example.mlkitlib.databinding.ActivityCameraBinding
 import com.example.mlkitlib.ocr.TextItem
@@ -115,6 +119,7 @@ class CameraActivity : AppCompatActivity() {
 
         imageCapture = ImageCapture.Builder()
             .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+            .setJpegQuality(100)
             .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
             .build()
 
@@ -159,6 +164,7 @@ class CameraActivity : AppCompatActivity() {
 
     private fun recognizeText(mImageBitmap: Bitmap) {
         imageBitmap = mImageBitmap
+
         runOnUiThread { binding.textPreview.setImageBitmap(imageBitmap) }
         binding.graphicOverlay.clear()
 
@@ -174,6 +180,12 @@ class CameraActivity : AppCompatActivity() {
             } ?: exception!!.localizedMessage?.let { UnityBridge.returnShow(it) }
         }
         imageProcessor.processBitmap(imageBitmap, binding.graphicOverlay)
+
+        binding.graphicOverlay.updateLayoutParams{
+            height = imageBitmap!!.height
+            width = imageBitmap!!.width
+        }
+
     }
 
     // Update UI after captured photo
