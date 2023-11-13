@@ -24,6 +24,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.google.common.base.Preconditions;
@@ -71,6 +72,8 @@ public class GraphicOverlay extends View {
   private boolean isImageFlipped;
   private boolean needUpdateTransformation = true;
 
+
+
   /**
    * Base class for a custom graphics object to be rendered within the graphic overlay. Subclass
    * this and implement the {@link Graphic#draw(Canvas)} method to define the graphics element. Add
@@ -97,6 +100,7 @@ public class GraphicOverlay extends View {
      * @param canvas drawing canvas
      */
     public abstract void draw(Canvas canvas);
+
 
     protected void drawRect(
         Canvas canvas, float left, float top, float right, float bottom, Paint paint) {
@@ -216,6 +220,13 @@ public class GraphicOverlay extends View {
     addOnLayoutChangeListener(
         (view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) ->
             needUpdateTransformation = true);
+  }
+
+  public GraphicOverlay(Context context) {
+    super(context);
+    addOnLayoutChangeListener(
+            (view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) ->
+                    needUpdateTransformation = true);
   }
 
   /** Removes all graphics from the overlay. */

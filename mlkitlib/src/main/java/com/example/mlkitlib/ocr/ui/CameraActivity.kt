@@ -1,15 +1,21 @@
 package com.example.mlkitlib.ocr.ui
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.RectF
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.util.Log
+import android.util.Rational
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.MotionEvent
+import android.view.Surface
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
@@ -18,17 +24,19 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import com.example.mlkitlib.R
+import androidx.core.view.GestureDetectorCompat
+import androidx.core.view.updateLayoutParams
 import com.example.mlkitlib.UnityBridge
 import com.example.mlkitlib.databinding.ActivityCameraBinding
+import com.example.mlkitlib.ocr.TextItem
 import com.example.mlkitlib.ocr.TextRecognitionHelper
 import com.example.mlkitlib.ocr.util.viewBinding
 import com.example.mlkitlib.ocr.view.GraphicOverlay
+import com.example.mlkitlib.ocr.view.TextGraphic
 import com.example.mlkitlib.ocr.view.TextRecognitionProcessor
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import resizeBitmap
-import rotateBitmap
 import showToastShort
 import uriToBitmap
 import vibrate
@@ -38,6 +46,7 @@ import java.io.File
 class CameraActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityCameraBinding::inflate)
+    private val viewModel by viewModels<CameraViewModel>()
 
     private var imageCapture: ImageCapture? = null
     private var textHelper: TextRecognitionHelper? = null
@@ -45,12 +54,17 @@ class CameraActivity : AppCompatActivity() {
 
     private var PHOTO_FORMAT: String = ".jpg"
 
-    private var isCameraUsing = false
+    private var imageBitmap: Bitmap? = null
+
+    private var lastGraphic: TextGraphic? = null
+
+    lateinit var mDetector: GestureDetectorCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        mDetector = GestureDetectorCompat(this, MyGestureListener())
 
         initCameraX()
         setup()
@@ -73,9 +87,29 @@ class CameraActivity : AppCompatActivity() {
         binding.buttonClose.setOnClickListener {
             binding.infoView.visibility = View.GONE
         }
+
+        viewModel.selectedTextList.observe(this){ list ->
+            if (!list.isNullOrEmpty()){
+                binding.graphicOverlay.remove(lastGraphic)
+                var string = ""
+                list.map {
+                    if(it.isSelected)
+                        string += it.text + "\n"
+                }
+                binding.editTextResult.setText(string)
+
+                if (imageBitmap != null)
+                    binding.graphicOverlay.setImageSourceInfo(imageBitmap!!.width, imageBitmap!!.height, false)
+                val graphic =  TextGraphic(binding.graphicOverlay,
+                    list,true,false,false)
+                binding.graphicOverlay.add(graphic)
+                lastGraphic = graphic
+            }
+        }
     }
 
     private fun setInitialScreen(){
+        viewModel.clearList()
         binding.relativeResult.visibility = View.INVISIBLE
         binding.buttonTakePic.visibility = View.VISIBLE
         binding.cameraView.visibility = View.VISIBLE
@@ -86,6 +120,7 @@ class CameraActivity : AppCompatActivity() {
 
         imageCapture = ImageCapture.Builder()
             .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+            .setJpegQuality(100)
             .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
             .build()
 
@@ -128,27 +163,41 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun recognizeText(imageBitmap: Bitmap) {
+    @SuppressLint("ClickableViewAccessibility")
+    private fun recognizeText(mImageBitmap: Bitmap) {
+        imageBitmap = mImageBitmap
+
         runOnUiThread { binding.textPreview.setImageBitmap(imageBitmap) }
         binding.graphicOverlay.clear()
 
         val imageProcessor = TextRecognitionProcessor(this, TextRecognizerOptions.Builder().build()) { result, exception ->
             Log.d("TESTING", "recognizeText: value changed")
 
-            result?.let {
-                binding.graphicOverlay.setImageSourceInfo(imageBitmap.width, imageBitmap.height, false)
-                updateUI(it)
+            result?.let { text ->
+                viewModel.clearList()
+                viewModel.setList(text)
+                binding.graphicOverlay.setImageSourceInfo(imageBitmap!!.width, imageBitmap!!.height, false)
+                updateUI()
 
             } ?: exception!!.localizedMessage?.let { UnityBridge.returnShow(it) }
         }
         imageProcessor.processBitmap(imageBitmap, binding.graphicOverlay)
+
+        binding.graphicOverlay.updateLayoutParams{
+            height = imageBitmap!!.height
+            width = imageBitmap!!.width
+        }.also {
+            binding.graphicOverlay.setOnTouchListener { view, motionEvent ->
+                mDetector.onTouchEvent(motionEvent)
+            }
+        }
+
     }
 
     // Update UI after captured photo
-    private fun updateUI(result: Text) {
+    private fun updateUI() {
         binding.apply {
             layoutEdit.visibility = View.VISIBLE
-            editTextResult.setText(result.text)
             editTextResult.requestFocus()
         }
     }
@@ -165,6 +214,35 @@ class CameraActivity : AppCompatActivity() {
         //    val rotatedBitmap = rotateBitmap(this, resizeBitmap)
 
             recognizeText(resizeBitmap)
+        }
+    }
+
+
+    /*override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return mDetector.onTouchEvent(event!!)
+    }*/
+
+    fun onTextClick(event: MotionEvent?){
+        val list = viewModel.selectedTextList.value
+        val x = event?.x
+        val y = event?.y
+        if (x != null && y != null)
+            list?.forEach {
+                if (it.rect.contains(x,y)){
+                    Log.d("TESTING", "onTouchEvent: you clicked ${(list.indexOf(it))+1}")
+                    viewModel.handleClickedText(it)
+                }
+            }
+    }
+
+    inner class MyGestureListener : SimpleOnGestureListener() {
+        override fun onDown(e: MotionEvent): Boolean {
+            return true
+        }
+
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            onTextClick(e)
+            return false
         }
     }
 
