@@ -45,9 +45,12 @@ class CameraActivity : AppCompatActivity() {
 
     private var PHOTO_FORMAT: String = ".jpg"
 
+    private var isCameraUsing = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
 
         initCameraX()
         setup()
@@ -57,10 +60,25 @@ class CameraActivity : AppCompatActivity() {
         textHelper = TextRecognitionHelper()
         imageUri?.let { textHelper?.build(this) }
 
-        binding.buttonSubmit.setOnClickListener {
+        binding.buttonDone.setOnClickListener {
             finish()
             UnityBridge.returnShow(binding.editTextResult.text.toString())
         }
+
+        binding.buttonCancel.setOnClickListener{
+            binding.layoutEdit.visibility = View.INVISIBLE
+            setInitialScreen()
+        }
+
+        binding.buttonClose.setOnClickListener {
+            binding.infoView.visibility = View.GONE
+        }
+    }
+
+    private fun setInitialScreen(){
+        binding.relativeResult.visibility = View.INVISIBLE
+        binding.buttonTakePic.visibility = View.VISIBLE
+        binding.cameraView.visibility = View.VISIBLE
     }
 
     private fun initCameraX() {
@@ -89,6 +107,7 @@ class CameraActivity : AppCompatActivity() {
 
     private fun takePhoto() {
         binding.buttonTakePic.setOnClickListener {
+            binding.infoView.visibility = View.GONE
             val photoFile = File(externalMediaDirs.firstOrNull(), "${System.currentTimeMillis()}$PHOTO_FORMAT")
             val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
@@ -143,9 +162,9 @@ class CameraActivity : AppCompatActivity() {
             binding.cameraView.visibility = View.GONE
 
             val resizeBitmap = resizeBitmap(bitmap)
-            val rotatedBitmap = rotateBitmap(this, resizeBitmap)
+        //    val rotatedBitmap = rotateBitmap(this, resizeBitmap)
 
-            recognizeText(rotatedBitmap)
+            recognizeText(resizeBitmap)
         }
     }
 
